@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muhurtham & Tara Bala Master</title>
+    <style>
+        :root {
+            --primary: #4f46e5; /* Indigo */
+            --primary-dark: #4338ca;
+            --secondary: #64748b; /* Slate */
+            --success: #10b981; /* Emerald */
+            --success-bg: #ecfdf5;
+            --danger: #ef4444; /* Red */
+            --danger-bg: #fef2f2;
+            --info-bg: #f8fafc;
+            --border: #e2e8f0;
+            --surface: #ffffff;
+            --bg: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: #1e293b;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--surface);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            background: #fff;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            background: none;
+            font-weight: 600;
+            color: var(--secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+        }
+        .tab-btn:hover { color: var(--primary); background-color: #f8fafc; }
+        .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+        /* Content */
+        .tab-content { display: none; padding: 24px; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        h2 { margin-top: 0; color: #1e293b; text-align: center; margin-bottom: 24px; }
+        
+        /* Forms */
+        .control-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.9rem; font-weight: 600; color: #475569; margin-bottom: 8px; }
+        select, input {
+            width: 100%; padding: 12px 16px; border: 1px solid #cbd5e1; border-radius: 8px;
+            font-size: 1rem; color: #334155; background-color: #fff; transition: border 0.2s;
+            box-sizing: border-box;
+        }
+        select:focus, input:focus { outline: none; border-color: var(--primary); ring: 2px solid var(--primary); }
+
+        /* Button */
+        .action-btn {
+            display: block; width: 100%; padding: 14px; margin-top: 24px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 600;
+            cursor: pointer; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+        .action-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 8px -1px rgba(79, 70, 229, 0.4); }
+        .action-btn:active { transform: translateY(0); }
+
+        /* Results */
+        .result-box { display: none; margin-top: 32px; }
+
+        /* Info Card (Reference Data) */
+        .info-card {
+            background-color: var(--info-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .info-card h3 { margin-top: 0; color: var(--primary); font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .data-grid { display: grid; grid-template-columns: 1fr; gap: 12px; font-size: 0.95rem; }
+        @media (min-width: 600px) { .data-grid { grid-template-columns: 1fr 1fr; } }
+        .data-item { margin-bottom: 8px; }
+        .data-label { font-weight: 600; color: #64748b; display: block; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .data-value { color: #334155; }
+
+        /* Outcome Cards */
+        .outcome-card {
+            border-radius: 12px; padding: 20px; margin-bottom: 20px;
+            border: 1px solid transparent;
+        }
+        .card-good { background-color: var(--success-bg); border-color: #d1fae5; }
+        .card-bad { background-color: var(--danger-bg); border-color: #fee2e2; }
+        
+        .card-title { margin: 0 0 16px 0; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .good-text { color: #059669; }
+        .bad-text { color: #dc2626; }
+
+        /* Star List Grid */
+        .star-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+        .star-pill {
+            background: white; padding: 10px; border-radius: 8px;
+            border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            display: flex; flex-direction: column; align-items: flex-start;
+        }
+        .star-name { font-weight: 600; color: #1e293b; font-size: 0.95rem; }
+        .star-te { font-size: 0.8rem; color: #94a3b8; margin-bottom: 4px; }
+        
+        .tara-badge {
+            font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 100px; color: white; margin-top: 4px; text-transform: uppercase;
+        }
+        .bg-good { background-color: var(--success); }
+        .bg-bad { background-color: var(--danger); }
+        .bg-neutral { background-color: #94a3b8; }
+
+        /* Reference Table */
+        .table-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; min-width: 700px; font-size: 0.9rem; }
+        th { background-color: #f8fafc; color: #475569; font-weight: 600; text-align: left; padding: 12px 16px; border-bottom: 2px solid var(--border); }
+        td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: #334155; vertical-align: top; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background-color: #f8fafc; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('calc')">🧮 Calculator</button>
+        <button class="tab-btn" onclick="switchTab('ref')">📚 Reference Table</button>
+    </div>
+
+    <!-- TAB 1: CALCULATOR -->
+    <div id="calc" class="tab-content active">
+        <h2>Muhurtham Calculator</h2>
+        
+        <div class="control-group">
+            <label>1. Your Birth Star (Janma Nakshatra)</label>
+            <select id="birthStarSelect">
+                <option value="">Select your star...</option>
+            </select>
+        </div>
+
+        <div class="control-group">
+            <label>2. Select Event</label>
+            <select id="eventSelect">
+                <option value="">Select event...</option>
+            </select>
+        </div>
+
+        <button class="action-btn" onclick="calculate()">Check Suitability</button>
+
+        <div id="results" class="result-box">
+            
+            <!-- SECTION 1: REFERENCE DATA DISPLAY -->
+            <div class="info-card">
+                <h3>📖 Official Event Rules (From PDF)</h3>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span class="data-label">Event Name</span>
+                        <span class="data-value" id="resName"></span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Allowed Tithis</span>
+                        <span class="data-value" id="resTithis"></span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Allowed Days</span>
+                        <span class="data-value" id="resDays"></span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Allowed Lagnas</span>
+                        <span class="data-value" id="resLagnas"></span>
+                    </div>
+                </div>
+                <div class="data-item" style="margin-top: 12px;">
+                    <span class="data-label">Allowed Nakshatras (General List)</span>
+                    <span class="data-value" id="resAllStars" style="font-style: italic; color: #4b5563;"></span>
+                </div>
+                <div class="data-item" style="margin-top: 12px; background: #fff; padding: 10px; border-radius: 6px; border: 1px dashed #cbd5e1;">
+                    <span class="data-label">⚠️ Remarks / Special Rules</span>
+                    <span class="data-value" id="resRemarks"></span>
+                </div>
+            </div>
+
+            <!-- SECTION 2: PERSONALIZED RESULTS -->
+            <h3 style="text-align:center; color: #334155; margin-bottom: 20px;">Your Compatibility Report</h3>
+
+            <div class="outcome-card card-good">
+                <div class="card-title good-text">
+                    <span>✅ Highly Recommended</span>
+                </div>
+                <p style="margin-top:0; margin-bottom:15px; font-size:0.9em; color:#065f46;">
+                    These stars are listed in the PDF <strong>AND</strong> are favorable for your birth star (Tara Bala).
+                </p>
+                <div id="goodList" class="star-grid"></div>
+            </div>
+
+            <div class="outcome-card card-bad">
+                <div class="card-title bad-text">
+                    <span>❌ Avoid (Incompatible)</span>
+                </div>
+                <p style="margin-top:0; margin-bottom:15px; font-size:0.9em; color:#991b1b;">
+                    These stars are in the PDF list but are <strong>NOT good for you</strong> personally (Vipat/Pratyak/Naidhana Tara).
+                </p>
+                <div id="badList" class="star-grid"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TAB 2: REFERENCE -->
+    <div id="ref" class="tab-content">
+        <h2>Full Event List</h2>
+        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search for event..." style="margin-bottom: 20px;">
+        <div class="table-wrapper">
+            <table id="refTable">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">Event</th>
+                        <th style="width: 15%;">Tithis & Days</th>
+                        <th style="width: 30%;">Nakshatras</th>
+                        <th style="width: 35%;">Rules & Lagnas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- JS Populated -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // ================= DATA =================
+    const nakshatras = [
+        {id:1, en:"Ashwini", te:"అశ్విని"}, {id:2, en:"Bharani", te:"భరణి"}, {id:3, en:"Krittika", te:"కృత్తిక"},
+        {id:4, en:"Rohini", te:"రోహిణి"}, {id:5, en:"Mrigashira", te:"మృగశిర"}, {id:6, en:"Arudra", te:"ఆరుద్ర"},
+        {id:7, en:"Punarvasu", te:"పునర్వసు"}, {id:8, en:"Pushyami", te:"పుష్యమి"}, {id:9, en:"Ashlesha", te:"ఆశ్లేష"},
+        {id:10, en:"Makha", te:"మఖ"}, {id:11, en:"Pubba", te:"పుబ్బ"}, {id:12, en:"Uttara", te:"ఉత్తర"},
+        {id:13, en:"Hasta", te:"హస్త"}, {id:14, en:"Chitta", te:"చిత్త"}, {id:15, en:"Swati", te:"స్వాతి"},
+        {id:16, en:"Vishakha", te:"విశాఖ"}, {id:17, en:"Anuradha", te:"అనూరాధ"}, {id:18, en:"Jyeshta", te:"జ్యేష్ఠ"},
+        {id:19, en:"Moola", te:"మూల"}, {id:20, en:"P.Shada", te:"పూర్వాషాఢ"}, {id:21, en:"U.Shada", te:"ఉత్తరాషాఢ"},
+        {id:22, en:"Shravana", te:"శ్రవణం"}, {id:23, en:"Dhanishta", te:"ధనిష్ఠ"}, {id:24, en:"Shatabhisham", te:"శతభిషం"},
+        {id:25, en:"P.Bhadra", te:"పూర్వాభాద్ర"}, {id:26, en:"U.Bhadra", te:"ఉత్తరాభాద్ర"}, {id:27, en:"Revati", te:"రేవతి"}
+    ];
+
+    const eventsData = [
+        {
+            name: "Shanku Sthapana (Foundation)",
+            te: "శంకుస్థాపన",
+            tithis: "3, 5, 7, 11, 13",
+            days: "Wed, Thu, Fri",
+            lagnas: "Vrishabha, Karka, Kumbha, Meena",
+            remarks: "Chaturtha/Ashtama/Dashama/Vyaya shuddhi required. Moon in 1,8,6,12 prohibited.",
+            stars: [4, 5, 13, 27, 17, 12, 8, 22, 21, 26, 7, 23, 24, 1, 15] 
+        },
+        {
+            name: "Griha Pravesham",
+            te: "గృహప్రవేశము",
+            tithis: "2, 3, 5, 7, 10, 13, 15",
+            days: "Mon, Wed, Thu, Fri (Sat morning ok)",
+            lagnas: "Vrishabha, Simha, Vrischika, Kumbha, Meena, Kanya, Dhanu, Mithuna",
+            remarks: "Avoid: Swati, Ashwini, Punarvasu, Shravana. Fire risk in Lagna/Krittika.",
+            stars: [4, 5, 8, 12, 17, 23, 24, 21, 26, 27] 
+        },
+        {
+            name: "Nishekam",
+            te: "నిషేకము",
+            tithis: "2, 3, 5, 7, 10",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Vrishabha, Mithuna, Karka, Simha, Tula, Dhanu, Kumbha, Meena",
+            remarks: "Magha panchakam subham. Medium: Mru, Pun, Push, Chi, Dhanus.",
+            stars: [1, 4, 12, 13, 15, 17, 19, 21, 22, 24, 26, 27, 18, 5, 7, 8, 14, 23]
+        },
+        {
+            name: "Garbhadhanam",
+            te: "గర్భాదానము",
+            tithis: "2, 3, 5, 7, 10",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Vrishabha, Mithuna, Kanya, Simha, Tula, Dhanu, Kumbha",
+            remarks: "Avoid Moola. Needs 1,5,7,9 house aspect.",
+            stars: [4, 12, 13, 15, 17, 21, 22, 24, 26, 23, 5, 11, 20, 25, 6, 7, 8, 14, 16]
+        },
+        {
+            name: "Pumsavanam",
+            te: "పుంసవనము",
+            tithis: "2, 3, 5, 7, 10, 13, 15",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Mesha, Dhanu, Mithuna, Meena (No Simha/Vrischika)",
+            remarks: "3rd Month. 3, 9 Shuddhi.",
+            stars: [1, 4, 5, 8, 12, 13, 14, 15, 17, 19, 21, 22, 23, 24, 26, 27]
+        },
+        {
+            name: "Seemantham",
+            te: "సీమంతము",
+            tithis: "2, 3, 5, 7, 10, 13, 15",
+            days: "Sun, Tue, Thu",
+            lagnas: "Mesha, Dhanu, Meena",
+            remarks: "4,6,8 months. Navama shuddhi.",
+            stars: [1, 4, 5, 7, 8, 12, 13, 14, 15, 17, 19, 21, 22, 23, 24, 26, 27]
+        },
+        {
+            name: "Jatakarma",
+            te: "జాతకర్మ",
+            tithis: "2, 3, 5, 7, 10, 13",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Vrishabha, Tula, Mithuna, Kanya, Dhanu, Meena, Kataka",
+            remarks: "Ashtama Shuddhi",
+            stars: [4, 26, 21, 15, 7, 22, 23, 24, 1, 13, 8, 17]
+        },
+        {
+            name: "Namakaranam",
+            te: "నామకరణము",
+            tithis: "2, 3, 5, 7, 10, 13",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Vrishabha, Tula, Mithuna, Kanya, Dhanu, Meena, Kataka",
+            remarks: "Ashtama Shuddhi",
+            stars: [1, 4, 12, 21, 26, 15, 7, 22, 23, 24, 13, 8, 17]
+        },
+        {
+            name: "Dolarohanam",
+            te: "డోలారోహణము",
+            tithis: "2, 3, 5, 7, 10, 13",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Vrishabha, Mithuna, Karka, Kanya, Tula, Dhanu, Meena",
+            remarks: "1, 3, 5 months.",
+            stars: [1, 4, 5, 12, 21, 26, 7, 13, 14, 15, 16, 17]
+        },
+        {
+            name: "Annaprasanam",
+            te: "అన్నప్రాశనము",
+            tithis: "2, 3, 5, 7, 10, 13",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Vrishabha, Mithuna, Karka, Kanya, Tula, Dhanu, Meena",
+            remarks: "Male: 6,8,10mo. Female: 5,7,9mo.",
+            stars: [1, 4, 5, 7, 8, 12, 21, 26, 13, 14, 15, 17, 22, 23, 24, 27]
+        },
+        {
+            name: "Karnavedha",
+            te: "కర్ణవేధ",
+            tithis: "2, 3, 5, 7, 10",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Vrishabha, Mithuna, Karka, Kanya, Tula, Dhanu, Makara",
+            remarks: "6, 7, 8 months.",
+            stars: [1, 5, 8, 13, 14, 15, 17, 22, 23, 24, 27, 6, 12, 21, 26]
+        },
+        {
+            name: "Keshakhandanam",
+            te: "కేశఖండనము",
+            tithis: "2, 3, 5, 7, 10",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Vrishabha, Mithuna, Karka, Kanya, Tula, Dhanu, Meena, Makara",
+            remarks: "Uttarayanam, Morning only.",
+            stars: [1, 5, 7, 8, 13, 14, 15, 22, 23, 24, 27]
+        },
+        {
+            name: "Akshara Sweekaram",
+            te: "అక్షర స్వీకారము",
+            tithis: "2, 3, 5, 7, 10",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Mesha, Karka, Tula, Makara",
+            remarks: "Uttarayanam, 5th year.",
+            stars: [1, 7, 8, 13, 14, 17, 22, 23, 27]
+        },
+        {
+            name: "Mantropadesham",
+            te: "మంత్రోపదేశము",
+            tithis: "2, 3, 5, 7, 10",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Mesha, Karka, Tula, Makara...",
+            remarks: "Avoid Adhika masam.",
+            stars: [4, 5, 8, 22, 1, 27, 12, 21, 26, 13, 14, 15, 17, 24]
+        },
+        {
+            name: "Vidyarambham",
+            te: "విద్యారంభము",
+            tithis: "2, 3, 5, 7, 10, 11, 13",
+            days: "Sun, Mon, Wed, Thu, Fri",
+            lagnas: "Mesha, Karka, Tula, Makara",
+            remarks: "Saraswati puja.",
+            stars: [1, 5, 6, 7, 8, 9, 12, 11, 20, 25, 13, 14, 15, 17, 19]
+        },
+        {
+            name: "Upanayanam",
+            te: "ఉపనయనము",
+            tithis: "2, 3, 5, 7, 10, 13",
+            days: "Wed, Thu, Fri (Sun ok if Ravi strong)",
+            lagnas: "Grahas in Kendra.",
+            remarks: "Avoid: Bharani, Krit, Makha, Vishakha, Jyeshta.",
+            stars: [1, 4, 5, 7, 8, 12, 17, 21, 26, 13, 14, 15, 22, 23, 24, 27]
+        },
+        {
+            name: "Vivaham (Marriage)",
+            te: "వివాహము",
+            tithis: "2, 3, 5, 7, 10, 13",
+            days: "Wed, Thu, Fri",
+            lagnas: "Vrishabha, Mithu, Karka, Kanya, Tula, Dhanu, Meena, Mesha",
+            remarks: "Saptama shuddhi. Avoid: Makha, Pushya, Kritti, Ashwi, Bhara, Ashle, Vish, Jye, Pubba, P.Sha, P.Bha.",
+            stars: [4, 5, 10, 15, 13, 17, 27, 12, 21, 26, 19]
+        },
+        {
+            name: "Kanyaka Dharanam",
+            te: "కన్యక ధారణము",
+            tithis: "2, 3, 5, 10, 13",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Vrishabha, Mithu, Karka, Kanya, Tula, Dhanu, Makara, Kumbha",
+            remarks: "Morning preferred.",
+            stars: [1, 7, 8, 12, 21, 26, 13, 14, 15, 17, 22, 27]
+        },
+        {
+            name: "Nutana Vastra Dharana",
+            te: "నూతన వస్త్ర ధారణము",
+            tithis: "2, 3, 5, 7, 10, 11, 13",
+            days: "Wed, Thu, Fri",
+            lagnas: "Vrishabha, Mithu, Karka, Kanya, Tula, Dhanu, Meena, Makara, Kumbha",
+            remarks: "Dwitiya/Shashti shuddhi.",
+            stars: [1, 12, 21, 26, 13, 14, 15, 17, 22, 23, 24, 27]
+        },
+        {
+            name: "Prayanam (Travel)",
+            te: "ప్రయాణం",
+            tithis: "2, 3, 5, 7, 10, 13",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Mesha, Vrishabha, Karka, Tula, Dhanu, Makara, Meena",
+            remarks: "Avoid directions with Shula. Chitta prohibited.",
+            stars: [5, 1, 8, 7, 13, 17, 22, 19, 27]
+        },
+        {
+            name: "Vahanam (Vehicle)",
+            te: "వాహనము",
+            tithis: "2, 3, 5, 7",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Chara Lagnas",
+            remarks: "Panchashuddhi required.",
+            stars: [4, 7, 8, 12, 21, 26, 13, 14]
+        },
+        {
+            name: "Kuparambham (Digging Well)",
+            te: "కూపారంభాదికం",
+            tithis: "2, 3, 5, 7, 10, 13, 15",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Karka, Vrishabha, Makara, Meena",
+            remarks: "East/NE/North good.",
+            stars: [1, 4, 8, 12, 21, 26, 13, 20, 17, 22, 24, 23, 27, 10]
+        },
+        {
+            name: "Rajya Darshanam",
+            te: "రాజ్య దర్శనము",
+            tithis: "2, 3, 5, 7, 10, 13, 15",
+            days: "Wed, Thu, Fri",
+            lagnas: "Meena, Makara, Karka, Vrishabha, Simha, Kanya, Tula",
+            remarks: "Moon in 10th house.",
+            stars: [17, 13, 4, 12, 21, 26, 23, 24, 10, 20, 27, 8, 5]
+        },
+        {
+            name: "Beejavapanam (Seeds)",
+            te: "బీజవాపనము",
+            tithis: "2, 3, 5, 7, 10, 13",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Vrishabha, Mithu, Karka, Kanya, Tula, Dhanu, Meena",
+            remarks: "Good Graha drishti.",
+            stars: [4, 13, 14, 15, 7, 8, 12, 21, 26, 19, 23, 27]
+        },
+        {
+            name: "Devata Pratishtha",
+            te: "దేవతా ప్రతిష్ఠ",
+            tithis: "2, 3, 5, 7, 10, 13",
+            days: "Sun, Mon, Wed, Thu, Fri",
+            lagnas: "Vrishabha, Mithu, Kanya, Dhanu, Kumbha, Meena, Vrischika, Tula",
+            remarks: "Uttarayanam preferred.",
+            stars: [22, 23, 24, 12, 21, 26, 17, 7, 13, 14, 27, 5, 9, 4]
+        },
+        {
+            name: "Vruksha Sthapana",
+            te: "వృక్షలతాది స్థాపనము",
+            tithis: "2, 3, 5, 7, 10, 13",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Vrishabha, Kataka, Kanya, Tula, Dhanu, Meena",
+            remarks: "Ashtama Shuddhi",
+            stars: [1, 4, 5, 8, 13, 14, 12, 21, 26, 17, 27]
+        },
+        {
+            name: "Aushadha Seva (Medicine)",
+            te: "ఔషధసేవ",
+            tithis: "2, 3, 5, 7, 10, 13",
+            days: "Sun, Thu, Fri, Mon, Wed",
+            lagnas: "Mithu, Kanya, Dhanu, Meena",
+            remarks: "7,8,12 Shuddhi.",
+            stars: [1, 8, 13, 14, 5, 17, 27, 22, 23, 24, 15, 7, 19]
+        },
+        {
+            name: "Vanijyam (Trade)",
+            te: "వాణిజ్యము",
+            tithis: "2, 3, 5, 7",
+            days: "Sun, Thu, Fri, Mon, Wed",
+            lagnas: "Vrishabha, Mithu, Kataka, Kanya, Vrischika, Dhanu, Meena",
+            remarks: "11th House Shuddhi.",
+            stars: [1, 4, 5, 13, 14, 17, 12, 21, 26, 15, 16, 19, 22, 23, 24, 27]
+        },
+        {
+            name: "Hala Karma",
+            te: "హలకర్మ",
+            tithis: "2, 3, 5, 7, 10, 11, 13",
+            days: "Sun, Wed, Thu, Fri",
+            lagnas: "Vrishabha, Mithu, Kanya, Vrischika, Dhanu, Meena",
+            remarks: "Kartari forbidden.",
+            stars: [1, 4, 5, 7, 8, 12, 21, 26, 13, 14, 15, 16, 17, 19, 22, 23, 24, 27]
+        },
+        {
+            name: "Yatra",
+            te: "యాత్ర",
+            tithis: "2, 3, 5, 7, 10, 11, 13",
+            days: "Wed, Thu, Fri",
+            lagnas: "Vrishabha, Kataka, Tula, Dhanu, Makara, Meena",
+            remarks: "Uttarayanam is good.",
+            stars: [1, 5, 7, 8, 13, 17, 22, 23, 27, 12, 21, 26, 19, 24]
+        },
+        {
+            name: "Grantha Mudrana (Publishing)",
+            te: "గ్రంథ ముద్రణకు",
+            tithis: "8, 5, 3, 10, 13, 15",
+            days: "Wed, Thu, Fri",
+            lagnas: "Vari Lagnam",
+            remarks: "Shubha Drishti.",
+            stars: [12, 21, 26, 17, 22, 23, 24, 7, 8, 13, 14, 15, 27, 1, 5, 4]
+        },
+        {
+            name: "Nava Vidya Pravesham",
+            te: "నవవిద్యా ప్రవేశము",
+            tithis: "2, 3, 5, 7, 10, 11, 13, 15",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Shubha Lagnas",
+            remarks: "Dwadasha Shuddhi.",
+            stars: [1, 4, 5, 7, 8, 12, 21, 26, 13, 14, 15, 17, 19, 22, 23, 24, 27]
+        },
+        {
+            name: "Vishnu Shayanam",
+            te: "విష్ణుశయన",
+            tithis: "2, 3, 5, 7, 10, 11, 13",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Mesha, Vrishabha, Karka, Tula, Dhanu, Meena",
+            remarks: "4th month good.",
+            stars: [1, 4, 5, 7, 8, 12, 21, 26, 13, 14, 15, 17, 22, 23, 24, 27]
+        },
+        {
+            name: "Nutana Vyaparam",
+            te: "నూతన వ్యాపారమునకు",
+            tithis: "11, 13, 15, (2,3,5,7,10)",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Kumbha (Except Chara)",
+            remarks: "1,2,11 Shuddhi.",
+            stars: [1, 13, 15, 17, 22, 24, 27, 11, 20, 25, 12, 21, 26, 4, 7, 8, 16]
+        },
+        {
+            name: "Nutana Udyogam (New Job)",
+            te: "నూతన ఉద్యోగమునకు",
+            tithis: "3, 13 (2,3,5,7,10,11)",
+            days: "Wed, Thu, Fri",
+            lagnas: "Shubha Lagnas",
+            remarks: "Sun or Mars in 10,11.",
+            stars: [1, 4, 5, 7, 8, 12, 14, 17, 22, 23, 26, 27]
+        },
+        {
+            name: "Vairamulaku (Conflict)",
+            te: "వైరములకు",
+            tithis: "2, 3, 5, 10, 13",
+            days: "Mon, Wed",
+            lagnas: "Vrishabha, Mithu, Kataka, Tula, Dhanu, Meena",
+            remarks: "Not if wife is 6mo pregnant.",
+            stars: [1, 5, 7, 8, 13, 14, 15, 16, 22, 23, 24]
+        },
+        {
+            name: "Pashu Vikrayam",
+            te: "పశు విక్రయములకు",
+            tithis: "2, 3, 5, 7, 10",
+            days: "Sun, Mon, Wed",
+            lagnas: "Except Kumbha",
+            remarks: "1, 8 Shuddhi.",
+            stars: [1, 23, 3, 4, 5, 6, 8, 9]
+        },
+        {
+            name: "Court/Legal",
+            te: "కోర్టుకు వెళ్ళుటకు",
+            tithis: "2, 3, 5, 7, 10",
+            days: "Sun, Mon, Wed",
+            lagnas: "Mesha, Kata, Tula, Makara, Mithu, Kanya, Vrischika",
+            remarks: "No Kumbha Lagna.",
+            stars: [27, 24, 9, 15, 22, 14, 1, 7, 8, 16, 3, 17, 23, 10, 11, 20, 25, 18, 19]
+        },
+        {
+            name: "Datta Sweekaram",
+            te: "దత్త స్వీకారం",
+            tithis: "2, 3, 5, 7, 10, 13",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Mesha, Kata, Tula, Makara, Mithu, Kanya, Vrischika, Kumbha",
+            remarks: "Tara bala required.",
+            stars: [1, 7, 8, 16, 15, 3, 17, 23, 9, 10, 11, 20, 25, 18, 19]
+        },
+        {
+            name: "Vastra Pratishtha",
+            te: "వస్త్ర ప్రతిష్ఠ",
+            tithis: "2, 5, 8, 11, 12, 15",
+            days: "Mon, Wed, Thu, Fri",
+            lagnas: "Vrishabha, Simha, Vrischika, Kumbha",
+            remarks: "Parashurama/Balarama same rules.",
+            stars: [1, 4, 5, 7, 8, 12, 21, 26, 13, 17, 18, 27, 22]
+        },
+        {
+            name: "Ramalaya/Hanuman Pratishtha",
+            te: "రామాలయ ప్రతిష్ఠ",
+            tithis: "2, 3, 5, 6, 7, 10, 11, 12, 13",
+            days: "Sun, Mon, Thu",
+            lagnas: "Mesha, Mithu, Simha, Dhanu, Kumbha",
+            remarks: "Uttarayanam, Krishna Janmashtami.",
+            stars: [13, 15, 22]
+        }
+    ];
+
+    // ================= INITIALIZATION =================
+    
+    // Init Dropdowns
+    const birthSelect = document.getElementById('birthStarSelect');
+    nakshatras.forEach(n => {
+        let opt = document.createElement('option');
+        opt.value = n.id;
+        opt.textContent = `${n.id}. ${n.en} (${n.te})`;
+        birthSelect.appendChild(opt);
+    });
+
+    const eventSelect = document.getElementById('eventSelect');
+    eventsData.forEach((ev, index) => {
+        let opt = document.createElement('option');
+        opt.value = index;
+        opt.textContent = `${ev.name}`;
+        eventSelect.appendChild(opt);
+    });
+
+    // Init Table
+    const tableBody = document.querySelector('#refTable tbody');
+    function renderTable(filter = "") {
+        tableBody.innerHTML = "";
+        eventsData.forEach(ev => {
+            if (ev.name.toLowerCase().includes(filter.toLowerCase()) || ev.te.includes(filter)) {
+                let starNames = ev.stars.map(id => {
+                    let s = nakshatras.find(n => n.id === id);
+                    return s ? `${s.en}` : id;
+                }).join(", ");
+
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${ev.name}</strong><br><small style="color:#64748b">${ev.te}</small></td>
+                    <td>${ev.tithis}<br>${ev.days}</td>
+                    <td><small>${starNames}</small></td>
+                    <td>${ev.remarks}<br><em style="color:#64748b">${ev.lagnas}</em></td>
+                `;
+                tableBody.appendChild(tr);
+            }
+        });
+    }
+    renderTable();
+
+    // ================= LOGIC =================
+
+    const taraMapping = {
+        1: { name: "Janma (Body)", type: "neutral" },
+        2: { name: "Sampat (Wealth)", type: "good" },
+        3: { name: "Vipat (Danger)", type: "bad" },
+        4: { name: "Kshema (Safety)", type: "good" },
+        5: { name: "Pratyak (Obstacle)", type: "bad" },
+        6: { name: "Sadhana (Success)", type: "good" },
+        7: { name: "Naidhana (Loss)", type: "bad" },
+        8: { name: "Mitra (Friend)", type: "good" },
+        9: { name: "P.Mitra (Best Friend)", type: "good" },
+        0: { name: "P.Mitra (Best Friend)", type: "good" }
+    };
+
+    function calculate() {
+        const userStarId = parseInt(document.getElementById('birthStarSelect').value);
+        const eventIndex = document.getElementById('eventSelect').value;
+
+        if (!userStarId || eventIndex === "") {
+            alert("Please select both your Birth Star and an Event.");
+            return;
+        }
+
+        const selectedEvent = eventsData[eventIndex];
+        const goodList = document.getElementById('goodList');
+        const badList = document.getElementById('badList');
+        
+        // --- 1. POPULATE REFERENCE DATA SECTION ---
+        document.getElementById('resName').innerHTML = `<strong>${selectedEvent.name}</strong> (${selectedEvent.te})`;
+        document.getElementById('resTithis').innerText = selectedEvent.tithis;
+        document.getElementById('resDays').innerText = selectedEvent.days;
+        document.getElementById('resLagnas').innerText = selectedEvent.lagnas;
+        document.getElementById('resRemarks').innerText = selectedEvent.remarks;
+
+        // Create readable list of ALL valid stars for this event
+        const allStarNames = selectedEvent.stars.map(id => {
+            const s = nakshatras.find(n => n.id === id);
+            return s ? s.en : id;
+        }).join(", ");
+        document.getElementById('resAllStars').innerText = allStarNames;
+
+
+        // --- 2. CALCULATE TARA BALA ---
+        goodList.innerHTML = "";
+        badList.innerHTML = "";
+        document.getElementById('results').style.display = "block";
+
+        let hasGood = false;
+        let hasBad = false;
+
+        selectedEvent.stars.forEach(starId => {
+            const star = nakshatras.find(n => n.id === starId);
+            if (!star) return;
+
+            // Math: (Target - Birth + 1)
+            let diff = star.id - userStarId + 1;
+            if (diff <= 0) diff += 27;
+            let taraNum = diff % 9;
+            if (taraNum === 0) taraNum = 9;
+
+            const taraInfo = taraMapping[taraNum];
+            const badgeClass = taraInfo.type === 'good' ? 'bg-good' : (taraInfo.type === 'bad' ? 'bg-bad' : 'bg-neutral');
+
+            const starPill = `
+                <div class="star-pill">
+                    <span class="star-name">${star.id}. ${star.en}</span>
+                    <span class="star-te">${star.te}</span>
+                    <span class="tara-badge ${badgeClass}">${taraInfo.name}</span>
+                </div>
+            `;
+
+            if (taraInfo.type === 'good') {
+                goodList.innerHTML += starPill;
+                hasGood = true;
+            } else {
+                badList.innerHTML += starPill;
+                hasBad = true;
+            }
+        });
+
+        if (!hasGood) goodList.innerHTML = "<p style='grid-column: 1/-1; color: #64748b; font-style:italic;'>No stars from the list are favorable for your birth star.</p>";
+        if (!hasBad) badList.innerHTML = "<p style='grid-column: 1/-1; color: #64748b; font-style:italic;'>All stars in this list are generally favorable!</p>";
+    }
+
+    // Helper: Switch Tabs
+    function switchTab(id) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        
+        document.getElementById(id).classList.add('active');
+        document.querySelector(`.tab-btn[onclick="switchTab('${id}')"]`).classList.add('active');
+    }
+
+    // Helper: Filter Table
+    function filterTable() {
+        renderTable(document.getElementById('searchInput').value);
+    }
+</script>
+
+</body>
+</html>
